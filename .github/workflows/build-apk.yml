@@ -1,142 +1,27 @@
-name: Android CI Build
-
+name: Build APK
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Build APK
-        run: |
+      - run: |
           mkdir -p app/src/main
-          cp -r AndroidManifest.xml app/
-          cp -r res app/
-          cp -r src app/
-          
+          cp -r AndroidManifest.xml res src app/
           echo "include ':app'" > settings.gradle
           echo "sdk.dir=$ANDROID_HOME" > local.properties
-
-          cat << 'EOF' > build.gradle
-          buildscript {
-              repositories { google(); mavenCentral() }
-              dependencies { classpath 'com.android.tools.build:gradle:8.1.0' }
-          }
-          allprojects { repositories { google(); mavenCentral() } }
-          EOF
-
-          cat << 'EOF' > app/build.gradle
-          plugins { id 'com.android.application' }
-          android {
-              namespace 'com.tester.app'
-              compileSdk 34
-              defaultConfig {
-                  applicationId 'com.tester.app'
-                  minSdk 21
-                  targetSdk 34
-                  versionCode 1
-                  versionName '1.0'
-              }
-          }
-          EOF
-
+          echo "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.0' } }" > build.gradle
+          echo "allprojects { repositories { google(); mavenCentral() } }" >> build.gradle
+          echo "plugins { id 'com.android.application' }" > app/build.gradle
+          echo "android { namespace 'com.tester.app'; compileSdk 34; defaultConfig { applicationId 'com.tester.app'; minSdk 21; targetSdk 34; versionCode 1; versionName '1.0' } }" >> app/build.gradle
           chmod +x gradlew || true
           gradle wrapper
           ./gradlew assembleDebug
-
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: CyberReconSuite-APK
           path: app/build/outputs/apk/debug/app-debug.apk
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.1.0'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          EOF
-
-          cat << 'EOF' > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
-          android {
-              namespace 'com.tester.app'
-              compileSdk 34
-              defaultConfig {
-                  applicationId 'com.tester.app'
-                  minSdk 21
-                  targetSdk 34
-                  versionCode 1
-                  versionName '1.0'
-              }
-          }
-          EOF
-
-          echo "include ':app'" > settings.gradle
-
-          chmod +x gradlew || true
-          gradle wrapper
-          ./gradlew assembleDebug
-
-      - name: Upload Artifact APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: CyberReconSuite-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.1.0'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          EOF
-
-          cat << 'EOF' > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
-          android {
-              namespace 'com.tester.app'
-              compileSdk 34
-              defaultConfig {
-                  applicationId 'com.tester.app'
-                  minSdk 21
-                  targetSdk 34
-                  versionCode 1
-                  versionName '1.0'
-              }
-          }
-          EOF
-
-          echo "include ':app'" > settings.gradle
-
-          chmod +x gradlew || true
-          gradle wrapper
-          ./gradlew assembleDebug
-
-      - name: Upload Artifact APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: CyberReconSuite-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
-          
