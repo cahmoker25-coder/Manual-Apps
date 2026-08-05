@@ -1,0 +1,51 @@
+    - name: Build APK with Gradle
+      run: |
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        
+        mkdir -p app/src/main
+        # Ambil file langsung dari dalam folder ManualApk kamu
+        cp -r ManualApk/AndroidManifest.xml app/
+        cp -r ManualApk/res app/
+        cp -r ManualApk/src app/
+        
+        cat << 'EOF' > build.gradle
+        buildscript {
+            repositories {
+                google()
+                mavenCentral()
+            }
+            dependencies {
+                classpath 'com.android.tools.build:gradle:8.1.0'
+            }
+        }
+        allprojects {
+            repositories {
+                google()
+                mavenCentral()
+            }
+        }
+        EOF
+
+        cat << 'EOF' > app/build.gradle
+        plugins {
+            id 'com.android.application'
+        }
+        android {
+            namespace 'com.tester.app'
+            compileSdk 34
+            defaultConfig {
+                applicationId 'com.tester.app'
+                minSdk 21
+                targetSdk 34
+                versionCode 1
+                versionName '1.0'
+            }
+        }
+        EOF
+
+        echo "include ':app'" > settings.gradle
+
+        chmod +x gradlew || true
+        gradle wrapper
+        ./gradlew assembleDebug
+        
