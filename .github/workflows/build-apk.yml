@@ -18,7 +18,8 @@ jobs:
           echo "include ':app'" > settings.gradle
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           
-          gradle wrapper --gradle-version 8.0
+          # Memaksa pembuatan wrapper dengan versi 8.0 secara eksplisit
+          ./gradlew wrapper --gradle-version 8.0 || gradle wrapper --gradle-version 8.0
           ./gradlew assembleDebug
 
       - uses: actions/upload-artifact@v4
