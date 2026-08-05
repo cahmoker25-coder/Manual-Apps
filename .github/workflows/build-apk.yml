@@ -18,8 +18,12 @@ jobs:
           echo "include ':app'" > settings.gradle
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           
-          # Langsung eksekusi build menggunakan gradle sistem tanpa wrapper
-          gradle assembleDebug
+          # Hapus wrapper lama jika ada lalu buat ulang dari nol menggunakan versi 8.1.1
+          rm -rf gradle gradlew gradlew.bat
+          gradle wrapper --gradle-version 8.1.1
+          
+          # Eksekusi pakai gradlew lokal, dijamin tidak lari ke versi 9.6.1 lagi
+          ./gradlew assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
