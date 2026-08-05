@@ -18,42 +18,13 @@ jobs:
           echo "include ':app'" > settings.gradle
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           
-          cat << 'EOF' > build.gradle
-          buildscript {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:7.4.2'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          EOF
-
-          cat << 'EOF' > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
-          android {
-              namespace 'com.tester.app'
-              compileSdk 33
-              defaultConfig {
-                  applicationId 'com.tester.app'
-                  minSdk 21
-                  targetSdk 33
-                  versionCode 1
-                  versionName '1.0'
-              }
-          }
-          EOF
+          echo "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.0.0' } }" > build.gradle
+          echo "allprojects { repositories { google(); mavenCentral() } }" >> build.gradle
           
-          gradle wrapper --gradle-version 7.5.1
+          echo "plugins { id 'com.android.application' }" > app/build.gradle
+          echo "android { namespace 'com.tester.app'; compileSdk 33; defaultConfig { applicationId 'com.tester.app'; minSdk 21; targetSdk 33; versionCode 1; versionName '1.0' } }" >> app/build.gradle
+          
+          gradle wrapper --gradle-version 8.0
           ./gradlew assembleDebug
 
       - uses: actions/upload-artifact@v4
