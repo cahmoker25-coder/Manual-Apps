@@ -1,0 +1,14 @@
+plugins {
+    id 'com.android.application'
+}
+android {
+    namespace 'com.tester.app'
+    compileSdk 33
+    defaultConfig {
+        applicationId 'com.tester.app'
+        minSdk 21
+        targetSdk 33
+        versionCode 1
+        versionName '1.0'
+    }
+}
