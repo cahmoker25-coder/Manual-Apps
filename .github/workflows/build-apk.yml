@@ -18,21 +18,12 @@ jobs:
           echo "include ':app'" > settings.gradle
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           
-          # Buat struktur wrapper secara manual agar memaksa Gradle 8.1.1 tanpa download lewat CLI
-          mkdir -p gradle/wrapper
-          echo "distributionBase=GRADLE_USER_HOME" > gradle/wrapper/gradle-wrapper.properties
-          echo "distributionPath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-          echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.1.1-bin.zip" >> gradle/wrapper/gradle-wrapper.properties
-          echo "zipStoreBase=GRADLE_USER_HOME" >> gradle/wrapper/gradle-wrapper.properties
-          echo "zipStorePath=wrapper/dists" >> gradle/wrapper/gradle-wrapper.properties
-          
-          # Download file gradlew secara langsung agar eksekusi murni pakai versi 8.1.1
-          curl -s https://raw.githubusercontent.com/gradle/gradle/v8.1.1/gradlew > gradlew
-          chmod +x gradlew
-          
-          ./gradlew assembleDebug
+          # Langsung jalankan build dengan gradle sistem tanpa wrapper
+          gradle assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
+          name: CyberReconSuite-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
           name: CyberReconSuite-APK
           path: app/build/outputs/apk/debug/app-debug.apk
