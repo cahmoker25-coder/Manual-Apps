@@ -10,14 +10,20 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - run: |
-          mkdir -p app/src/main
-          cp -r AndroidManifest.xml res src app/
+          mkdir -p app/src/main/java app/src/main/res
+          cp -r AndroidManifest.xml app/src/main/
+          cp -r res/* app/src/main/res/ 2>/dev/null || true
+          cp -r src/* app/src/main/java/ 2>/dev/null || true
+          
           echo "include ':app'" > settings.gradle
           echo "sdk.dir=$ANDROID_HOME" > local.properties
+          
           echo "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.0' } }" > build.gradle
           echo "allprojects { repositories { google(); mavenCentral() } }" >> build.gradle
+          
           echo "plugins { id 'com.android.application' }" > app/build.gradle
           echo "android { namespace 'com.tester.app'; compileSdk 34; defaultConfig { applicationId 'com.tester.app'; minSdk 21; targetSdk 34; versionCode 1; versionName '1.0' } }" >> app/build.gradle
+          
           chmod +x gradlew || true
           gradle wrapper
           ./gradlew assembleDebug
